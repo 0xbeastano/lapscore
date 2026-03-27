@@ -5,7 +5,7 @@
   # LapScore — PC Health Monitor
   > **Your laptop's health, at a glance.**
 
-  [**Download for Windows (86 MB)**](https://github.com/prani/lapscore/releases/latest)
+  [**Download for Windows (90 MB)**](https://github.com/0xbeastano/lapscore/releases/download/v1.0.0/LapScore.Setup.1.0.0.exe)
 
 </div>
 
@@ -42,13 +42,13 @@ LapScore is a premium, locally-hosted PC health monitor designed to give you dee
 
 ## 💾 Download
 
-→ [**LapScore Setup 1.0.0.exe**](https://github.com/prani/lapscore/releases/latest) (Windows 10/11)
+→ [**LapScore Setup 1.0.0.exe**](https://github.com/0xbeastano/lapscore/releases/download/v1.0.0/LapScore.Setup.1.0.0.exe) (Windows 10/11)
 
 ## 🛠️ Run from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/prani/lapscore
+git clone https://github.com/0xbeastano/lapscore
 cd lapscore
 
 # Install dependencies and build client
