@@ -1,0 +1,43 @@
+{
+  "name": "lapscore",
+  "version": "1.0.0",
+  "description": "Premium PC Health Monitor with Battery Intelligence, AI Readiness, and Fleet Management.",
+  "author": "LapScore Team",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "cross-env AUTO_OPEN=true node server/index.js",
+    "setup": "npm install && cd client && npm install && npm run build && cd ..",
+    "dev": "cross-env AUTO_OPEN=false concurrently \"node server/index.js\" \"cd client && npm run dev\"",
+    "fresh": "npm run setup && npm start",
+    "check": "node check.js",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"cross-env AUTO_OPEN=false node server/index.js\" \"wait-on http://localhost:7821/api/health && electron .\"",
+    "generate:icons": "node scripts/generate-icons.js",
+    "build": "cd client && npm run build && cd ..",
+    "build:win": "npm run build && electron-builder --win --config electron-builder.config.js",
+    "build:dist": "npm run build && electron-builder --config electron-builder.config.js",
+    "postinstall": "electron-rebuild"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "cors": "^2.8.5",
+    "electron-updater": "^6.8.3",
+    "express": "^4.21.1",
+    "node-cron": "^3.0.3",
+    "open": "^10.1.0",
+    "qrcode": "^1.5.4",
+    "systeminformation": "^5.25.11",
+    "ws": "^8.20.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^35.2.1",
+    "electron-builder": "^26.0.12",
+    "png-to-ico": "^3.0.1",
+    "puppeteer": "^24.40.0",
+    "sharp": "^0.34.5",
+    "wait-on": "^8.0.3"
+  }
+}

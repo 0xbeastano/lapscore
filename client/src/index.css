@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base:          #080810;
+  --bg-card:          #0f0f1e;
+  --bg-elevated:      #16162a;
+  --bg-border:        #1e1e38;
+  --accent-primary:   #7c3aed;
+  --accent-blue:      #3b82f6;
+  --accent-glow:      #a855f7;
+  --color-good:       #22c55e;
+  --color-warn:       #f59e0b;
+  --color-critical:   #ef4444;
+  --color-neutral:    #6b7280;
+  --text-primary:     #f1f5f9;
+  --text-secondary:   #94a3b8;
+  --text-muted:       #475569;
+  --radius-card:      12px;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(124,58,237,0.3); }
+  50%       { box-shadow: 0 0 35px rgba(124,58,237,0.6); }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out both;
+}
+.animate-glow-pulse {
+  animation: glow-pulse 2s infinite;
+}
+.spin-anim {
+  animation: spin 1s linear infinite;
+}
+
+/* UI Effects */
+.glass-nav {
+  background: rgba(8, 8, 16, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.card-glow {
+  box-shadow: 0 0 30px rgba(124,58,237,0.08);
+}
+
+.score-ring {
+  filter: drop-shadow(0 0 20px rgba(124,58,237,0.4));
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Mobile Optimization (NEW) ──────────────────────────────── */
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .score-card-container {
+    padding: 1.5rem !important;
+  }
+  
+  .ring-container {
+    max-width: 180px !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .stat-grid-mobile {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .top-nav-desktop {
+    display: none !important;
+  }
+
+  .glass-nav {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sidebar-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Specific component tweaks */
+.battery-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .battery-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Custom Charts Polish */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--bg-border);
+  stroke-opacity: 0.5;
+}
+
+.recharts-tooltip-cursor {
+  stroke: var(--bg-border);
+  stroke-width: 2;
+}
