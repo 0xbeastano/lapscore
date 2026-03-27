@@ -24,6 +24,19 @@ const alertEngine = require('./alertEngine');
 const aiMonitor = require('./aiSessionMonitor');
 const powerTracker = require('./powerTracker');
 
+// ── Helpers ──────────────────────────────────────────────────
+const getLocalIP = () => {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return 'localhost';
+};
+
 // ── Scheduler state ──────────────────────────────────────────
 let schedulerEnabled = false;
 let schedulerTimer = null;
@@ -41,19 +54,6 @@ const DATA_DIR = process.env.LAPSCORE_DATA_DIR || path.join(__dirname, '..', 'da
 const DIST_DIR = process.env.CLIENT_DIST_PATH || path.join(__dirname, '..', 'client', 'dist');
 const SCANS_DIR = path.join(DATA_DIR, 'scans');
 
-// ── Helpers ──────────────────────────────────────────────────
-function getLocalIP() {
-  const interfaces = os.networkInterfaces();
-  for (const name of Object.keys(interfaces)) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === 'IPv4' && !iface.internal) {
-        return iface.address;
-      }
-    }
-  }
-  return null;
-}
-
 // ── Middleware ────────────────────────────────────────────────
 app.use(cors());                     // Allow all origins (local network)
 app.use(express.json());
@@ -62,7 +62,12 @@ app.use(express.json());
 
 // Health check endpoint (used by Electron to know server is ready)
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', uptime: process.uptime(), ts: Date.now() });
+  res.json({ 
+    status: 'ok', 
+    version: require('../package.json').version, 
+    uptime: process.uptime(), 
+    ts: Date.now() 
+  });
 });
 
 app.use('/api/scan', scanRoutes);
@@ -649,33 +654,29 @@ async function startServer() {
     fleet.startBroadcast(scanData);
   }
 
-  const server = app.listen(PORT, '0.0.0.0', async () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    const pkg = require('../package.json');
     const localIP = getLocalIP();
     console.log('');
-    console.log('  ██╗      █████╗ ██████╗ ███████╗ ██████╗ ██████╗ ██████╗ ███████╗');
-    console.log('  ██║     ██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗██╔════╝');
-    console.log('  ██║     ███████║██████╔╝███████╗██║     ██║     ██████╔╝█████╗  ');
-    console.log('  ██║     ██╔══██║██╔═══╝ ╚════██║██║     ██║     ██╔══██╗██╔══╝  ');
-    console.log('  ███████╗██║  ██║██║     ███████║╚██████╗╚██████╗██║  ██║███████╗');
-    console.log('  ╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝ ╚═════╝ ╚═════╝╚═╝  ╚═╝╚══════╝');
+    console.log('  ██╗      █████╗ ██████╗ ███████╗');
+    console.log('  ██║     ██╔══██╗██╔══██╗██╔════╝');
+    console.log('  ██║     ███████║██████╔╝███████╗');
+    console.log('  ██║     ██╔══██║██╔═══╝ ╚════██║');
+    console.log('  ███████╗██║  ██║██║     ███████║');
+    console.log('  ╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝');
     console.log('');
-    console.log('  Your PC\'s health. Scored. Explained. Fixed.');
+    console.log(`  PC Health Monitor v${pkg.version}`);
+    console.log('  ─────────────────────────────────');
+    console.log(`  Local:   http://localhost:${PORT}`);
+    console.log(`  Network: http://${localIP}:${PORT}`);
     console.log('');
-    console.log(`  Local:    http://localhost:${PORT}`);
-    if (localIP) {
-      console.log(`  Network:  http://${localIP}:${PORT}`);
-    }
+    console.log('  Press Ctrl+C to stop');
     console.log('');
 
-    if (process.env.AUTO_OPEN !== 'false') {
-      setTimeout(async () => {
-        try {
-          const open = (await import('open')).default;
-          await open(`http://localhost:${PORT}`);
-        } catch (e) {
-          // Ignore if browser launch fails
-        }
-      }, 1500);
+    const isElectron = !!process.versions['electron'];
+    if (!isElectron && process.env.AUTO_OPEN !== 'false') {
+      console.log('  ✓ LapScore is running');
+      console.log(`  → Open in browser: http://localhost:${PORT}\n`);
     }
   });
 
@@ -694,11 +695,33 @@ if (require.main === module) {
 }
 
 process.on('SIGINT', () => {
-  console.log('Shutting down...');
+  console.log('\n  Shutting down LapScore...');
+  
   sampler.stop();
   cpuSampler.stop();
   liveStream.stop();
+  if (typeof fleet !== 'undefined' && fleet.stopListener) {
+    fleet.stopListener();
+  }
+
+  // Close SQLite database cleanly
+  try {
+    const { getDb } = require('./db');
+    const db = getDb();
+    if (db) {
+      db.close();
+      console.log('  ✓ Database closed');
+    }
+  } catch (e) {
+    // Already closed or not initialized
+  }
+
+  console.log('  ✓ Goodbye\n');
   process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  process.emit('SIGINT');
 });
 
 module.exports = { app };

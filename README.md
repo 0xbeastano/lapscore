@@ -1,72 +1,105 @@
-<div align="center">
+# LapScore — PC Health Monitor
 
-  <img src="assets/icon.png" alt="LapScore Logo" width="128" />
+> Battery life in years. AI session tracking. Fleet monitoring.
+> Free. Open source. No cloud. No account.
 
-  # LapScore — PC Health Monitor
-  > **Your laptop's health, at a glance.**
+![LapScore Dashboard](assets/icon.png)
 
-  [**Download for Windows (90 MB)**](https://github.com/0xbeastano/lapscore/releases/download/v1.0.0/LapScore.Setup.1.0.0.exe)
+## Quick Start
 
-</div>
+**Requirements:** [Node.js 18+](https://nodejs.org) · Git
+
+```bash
+git clone https://github.com/0xbeastano/lapscore
+cd lapscore
+npm run setup
+```
+
+Then open **http://localhost:7821** in your browser.
+
+That's it.
 
 ---
 
-LapScore is a premium, locally-hosted PC health monitor designed to give you deep insights into battery wear, CPU throttling, AI workload impacts, and cross-machine fleet monitoring. It runs 100% locally with zero cloud dependencies.
+## What It Does
 
-### 🖼️ Feature Previews
+| Feature | Description |
+|---|---|
+| **Health Score** | 0–100 score with grade A–F for your laptop |
+| **Battery Intelligence** | Cycle count → years remaining forecast |
+| **AI Session Monitor** | Tracks Ollama, LM Studio battery drain |
+| **CPU Throttle Radar** | Detects thermal throttling in real-time |
+| **Fleet Management** | Monitor all LAN machines from one screen |
+| **Power Cost Tracker** | Real electricity cost in ₹, $, or € |
 
-| **Dashboard** | **Battery Intelligence** |
-|:---:|:---:|
-| ![Main Dashboard](assets/screenshots/dashboard.png) | ![Battery Cycle Gauge](assets/screenshots/battery_panel.png) |
-| *Real-time Health Score (0-100)* | *Cycle counts & aging forecasts* |
+---
 
-| **AI Readiness** | **Throttle Radar** |
-|:---:|:---:|
-| ![AI Readiness](assets/screenshots/ai_readiness.png) | ![Throttle Tracker](assets/screenshots/throttle_radar.png) |
-| *Local LLM context window calculator* | *Thermal throttling event detection* |
-
-| **History** | **Fleet Manager** |
-|:---:|:---:|
-| ![Scan History](assets/screenshots/history.png) | ![Fleet Overview](assets/screenshots/fleet.png) |
-| *Trend analysis over time* | *Network-wide LAN device monitoring* |
-
-## 🚀 Key Features
-
-- **Real-time Health Score:** A comprehensive 0-100 rating based on live hardware diagnostics.
-- **Battery Cycle Intelligence:** Forecasts battery replacement timelines based on deep cycle telemetry.
-- **AI Workload Monitor:** Tracks local LLM resource usage (Ollama, LM Studio).
-- **CPU Throttle Radar:** Pinpoints exact thermal throttling events and identifies offending processes.
-- **Fleet Monitoring:** Monitor multiple LapScore instances across your local network (LAN-only).
-- **Power Cost Tracker:** Translates energy footprint into user-defined currency (₹/$/€).
-- **Zero Cloud & Zero Config:** All data stays on your machine. AppData-compliant architecture.
-
-## 💾 Download
-
-→ [**LapScore Setup 1.0.0.exe**](https://github.com/0xbeastano/lapscore/releases/download/v1.0.0/LapScore.Setup.1.0.0.exe) (Windows 10/11)
-
-## 🛠️ Run from Source
+## Manual Setup
 
 ```bash
-# Clone the repository
+# 1. Clone the repo
 git clone https://github.com/0xbeastano/lapscore
 cd lapscore
 
-# Install dependencies and build client
-npm run setup
+# 2. Install server dependencies
+npm install
 
-# Start the application in development mode
-npm run electron:dev
+# 3. Install client dependencies
+cd client && npm install && cd ..
+
+# 4. Build the React frontend
+npm run build
+
+# 5. Start the server
+npm start
+
+# 6. Open your browser
+# http://localhost:7821
 ```
-
-## 🏗️ Tech Stack
-
-- **Desktop Framework:** Electron
-- **Frontend:** React 18, TailwindCSS, Vite
-- **Backend:** Node.js (Express), SQLite (`better-sqlite3`), `systeminformation`
-- **Updates:** `electron-updater` (Silent background updates via GitHub Releases)
 
 ---
 
-<div align="center">
-  <i>Built with standard web technologies. No telemetry. No accounts required.</i>
-</div>
+## Development Mode (hot reload)
+
+```bash
+npm run dev
+```
+Starts both server and React dev server simultaneously.
+Frontend changes reflect instantly without rebuild.
+
+---
+
+## Access From Other Devices
+
+LapScore prints your network IP on startup:
+```
+Local:   http://localhost:7821
+Network: http://192.168.1.5:7821  ← open this on phone/tablet
+```
+
+---
+
+## Fleet Monitoring
+
+Any machine on your LAN running LapScore is
+auto-discovered via UDP. Open the **FLEET** tab
+to see all machines.
+
+Requirements:
+- Both machines on the same WiFi/LAN
+- Port 7822 (UDP) not blocked by firewall
+
+---
+
+## Tech Stack
+
+- **Backend:** Node.js, Express, SQLite (better-sqlite3)
+- **Frontend:** React, Vite, Tailwind CSS
+- **Hardware:** systeminformation
+- **Desktop:** Electron (optional, for .exe build)
+
+---
+
+## License
+
+MIT — free to use, modify, and distribute.
